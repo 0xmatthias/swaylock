@@ -1,4 +1,4 @@
-# swaylock
+# swaylock that acts like slock
 
 swaylock is a screen locking utility for Wayland compositors. It is compatible
 with any Wayland compositor which implements the following Wayland protocols:
