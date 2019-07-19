@@ -3,61 +3,27 @@
 #include <stdbool.h>
 #include <stdint.h>
 #include <wayland-client.h>
-#include "background-image.h"
 #include "cairo.h"
 #include "pool-buffer.h"
 #include "seat.h"
 #include "wlr-layer-shell-unstable-v1-client-protocol.h"
 
 enum auth_state {
-	AUTH_STATE_IDLE,
-	AUTH_STATE_CLEAR,
+	AUTH_STATE_START,
 	AUTH_STATE_INPUT,
-	AUTH_STATE_INPUT_NOP,
-	AUTH_STATE_BACKSPACE,
-	AUTH_STATE_VALIDATING,
 	AUTH_STATE_INVALID,
-};
-
-struct swaylock_colorset {
-	uint32_t input;
-	uint32_t cleared;
-	uint32_t caps_lock;
-	uint32_t verifying;
-	uint32_t wrong;
+	AUTH_STATE_VALIDATE
 };
 
 struct swaylock_colors {
 	uint32_t background;
-	uint32_t bs_highlight;
-	uint32_t key_highlight;
-	uint32_t caps_lock_bs_highlight;
-	uint32_t caps_lock_key_highlight;
-	uint32_t separator;
-	uint32_t layout_background;
-	uint32_t layout_border;
-	uint32_t layout_text;
-	struct swaylock_colorset inside;
-	struct swaylock_colorset line;
-	struct swaylock_colorset ring;
-	struct swaylock_colorset text;
+	uint32_t wrong;
+	uint32_t input;
+	uint32_t validate;
 };
 
 struct swaylock_args {
 	struct swaylock_colors colors;
-	enum background_mode mode;
-	char *font;
-	uint32_t font_size;
-	uint32_t radius;
-	uint32_t thickness;
-	bool ignore_empty;
-	bool show_indicator;
-	bool show_caps_lock_text;
-	bool show_caps_lock_indicator;
-	bool show_keyboard_layout;
-	bool hide_keyboard_layout;
-	bool show_failed_attempts;
-	bool daemonize;
 };
 
 struct swaylock_password {
@@ -67,8 +33,8 @@ struct swaylock_password {
 
 struct swaylock_state {
 	struct loop *eventloop;
-	struct loop_timer *clear_indicator_timer; // clears the indicator
-	struct loop_timer *clear_password_timer;  // clears the password buffer
+	//struct loop_timer *clear_indicator_timer; // clears the indicator
+	//struct loop_timer *clear_password_timer;  // clears the password buffer
 	struct wl_display *display;
 	struct wl_compositor *compositor;
 	struct wl_subcompositor *subcompositor;
@@ -119,7 +85,6 @@ struct swaylock_image {
 void swaylock_handle_key(struct swaylock_state *state,
 		xkb_keysym_t keysym, uint32_t codepoint);
 void render_frame_background(struct swaylock_surface *surface);
-void render_frame(struct swaylock_surface *surface);
 void render_frames(struct swaylock_state *state);
 void damage_surface(struct swaylock_surface *surface);
 void damage_state(struct swaylock_state *state);

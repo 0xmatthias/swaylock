@@ -120,7 +120,6 @@ dependencies = [
 ]
 
 sources = [
-	'background-image.c',
 	'cairo.c',
 	'comm.c',
 	'log.c',
